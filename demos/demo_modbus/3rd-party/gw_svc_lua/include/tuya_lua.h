@@ -7,7 +7,7 @@
 
 #include "tuya_lua_def.h"
 #include "tuya_os_adapter.h"
-#include "gw_com_def.h"
+// #include "gw_com_def.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"

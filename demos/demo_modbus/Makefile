@@ -17,10 +17,12 @@ LINKFLAGS = \
 
 LINKFLAGS += $(USER_LINK_FLAGS)
 LINKFLAGS += `pkg-config --libs libmodbus`
+LINKFLAGS += `pkg-config --libs liblua`
 
 CCFLAGS = \
 	-g -fPIC -Werror=unused-function
 CCFLAGS += `pkg-config --cflags libmodbus`
+CCFLAGS += `pkg-config --cflags liblua`
 
 DEFINES = -DAPP_BIN_NAME=\"$(APP_BIN_NAME)\" \
 		  -DUSER_SW_VER=\"$(USER_SW_VER)\" \
@@ -34,7 +36,11 @@ OUTPUT_DIR_OBJS = $(OUTPUT_DIR)/.objs
 
 #user app基准路径
 USER_SRC_BASE_DIR = ./src
+USER_SRC_BASE_DIR += ./3rd-party
+
 USER_INC_BASE_DIR = ./include
+USER_INC_BASE_DIR += ./3rd-party
+
 USER_INC_BASE_DIR += $(shell find $(ROOT_DIR)/sdk -name include -type d)
 
 #user app 编译文件
@@ -45,6 +51,7 @@ USER_SRCS += $(foreach dir, $(USER_SRC_DIRS), $(wildcard $(dir)/*.s))
 USER_SRCS += $(foreach dir, $(USER_SRC_DIRS), $(wildcard $(dir)/*.S)) 
 #user头文件
 USER_INCS = $(addprefix -I ,  $(shell find $(USER_INC_BASE_DIR) -type d) )
+
 #user的obj命令
 USER_OBJS = $(addsuffix .o, $(USER_SRCS))
 #user的实际obj地址
