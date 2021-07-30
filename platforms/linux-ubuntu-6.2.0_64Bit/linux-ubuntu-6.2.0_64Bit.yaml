@@ -1,0 +1,19 @@
+spec:
+  name: linux-ubuntu-6.2.0_64Bit
+  version: 0.0.4
+  summary: embed module created by embedded-cli.
+  homepage: YOUR_HOMEPAGE
+  license:
+    type: MIT
+    file: LICENSE
+  author:
+    name: embedCi
+    email: ci_manage
+  source:
+    git: https://code.registry.wgine.com/hardware_toolchain/linux-ubuntu-6.2.0_64Bit.git
+    tag: 0.0.4
+
+
+
+
+

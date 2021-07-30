@@ -1,0 +1,16 @@
+spec:
+  name: test_env
+  version: 5.0.0
+  summary: embed module created by embedded-cli.
+  homepage: YOUR_HOMEPAGE
+  license:
+    type: MIT
+    file: LICENSE
+  author:
+    name: embedCI
+    email: embed@tuya.com
+  source:
+    git: https://code.registry.wgine.com/hardware_toolchain/linux-ubuntu-6.2.0_64Bit.git
+    tag: 5.0.0
+
+
