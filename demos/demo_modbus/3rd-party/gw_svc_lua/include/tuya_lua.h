@@ -7,12 +7,12 @@
 
 #include "tuya_lua_def.h"
 #include "tuya_os_adapter.h"
-// #include "gw_com_def.h"
+#include "gw_com_def.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 #include "luaconf.h"
-#include "lua_com_api.h"
+// #include "lua_com_api.h"
 
 
 #define DO_DOWN_KEY "dp_down_"

@@ -6,7 +6,7 @@
 #endif
 
 #include "tuya_cloud_types.h"
-// #include "tuya_z3_zigbee_bash.h"
+#include "tuya_z3_zigbee_bash.h"
 #include "tuya_lua.h"
 
 

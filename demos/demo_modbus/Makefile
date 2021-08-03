@@ -24,9 +24,11 @@ CCFLAGS = \
 CCFLAGS += `pkg-config --cflags libmodbus`
 CCFLAGS += `pkg-config --cflags liblua`
 
+CPPFLAGS += -std=c++11
+
 DEFINES = -DAPP_BIN_NAME=\"$(APP_BIN_NAME)\" \
 		  -DUSER_SW_VER=\"$(USER_SW_VER)\" \
-		  -DTY_BT_MOD=1
+		  -DLUA_COMPAT_5_3
 
 CFLAGS = $(CCFLAGS) $(DEFINES) $(USER_INCS) $(USER_CFLAGS)
 
@@ -74,7 +76,7 @@ $(OUTPUT_DIR_OBJS)/%.c.o: %.c
 
 $(OUTPUT_DIR_OBJS)/%.cpp.o: %.cpp
 	@mkdir -p $(dir $@);
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CPP) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 $(OUTPUT_DIR_OBJS)/%.s.o: %.s
 	@mkdir -p $(dir $@);

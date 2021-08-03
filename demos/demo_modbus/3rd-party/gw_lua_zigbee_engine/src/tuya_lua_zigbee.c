@@ -122,7 +122,10 @@ STATIC OPERATE_RET lua_zigbee_up(IN TuYaApsFrame *sTyApsFrameTmp, LUA_KEY_DATA_S
     return OPRT_OK;
 }
 
-
+/*
+* pro_data:zcl header的json串
+* data:zcl payload序列化数据
+*/
 STATIC OPERATE_RET lua_zigbee_down(CHAR_T *dev_id, CHAR_T *pro_data, CHAR_T *data, INT_T len)
 {
     OPERATE_RET op_ret = OPRT_OK;
@@ -221,7 +224,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->c_id = child_json->valueint;
+        rep_table[i].c_id = child_json->valueint;
         
         child_json = ty_cJSON_GetObjectItem(rep_table_child_json, ATTR_ID_KEY);
         if(NULL == child_json) {
@@ -229,7 +232,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->a_id = child_json->valueint;
+        rep_table[i].a_id = child_json->valueint;
 
         child_json = ty_cJSON_GetObjectItem(rep_table_child_json, MIN_KEY);
         if(NULL == child_json) {
@@ -237,7 +240,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->min = child_json->valueint;
+        rep_table[i].min = child_json->valueint;
 
         child_json = ty_cJSON_GetObjectItem(rep_table_child_json, MAX_KEY);
         if(NULL == child_json) {
@@ -245,7 +248,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->max = child_json->valueint;
+        rep_table[i].max = child_json->valueint;
 
         child_json = ty_cJSON_GetObjectItem(rep_table_child_json, TYPE_KEY);
         if(NULL == child_json) {
@@ -253,7 +256,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->type = child_json->valueint;
+        rep_table[i].type = child_json->valueint;
 
         child_json = ty_cJSON_GetObjectItem(rep_table_child_json, VAL_KEY);
         if(NULL == child_json) {
@@ -261,13 +264,13 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
             op_ret = OPRT_CJSON_GET_ERR;
             goto INFO_JSON_ERR;
         }
-        rep_table[i]->val = child_json->valueint;
-        PR_DEBUG("rep_table[%d]->c_id: 0x%x.", i, rep_table[i]->c_id)
-        PR_DEBUG("rep_table[%d]->a_id: 0x%x.", i, rep_table[i]->a_id)
-        PR_DEBUG("rep_table[%d]->min: %u.", i, rep_table[i]->min)
-        PR_DEBUG("rep_table[%d]->max: %u.", i, rep_table[i]->max)
-        PR_DEBUG("rep_table[%d]->type: %d.", i, rep_table[i]->type)
-        PR_DEBUG("rep_table[%d]->val: %d.", i, rep_table[i]->val)
+        rep_table[i].val = child_json->valueint;
+        PR_DEBUG("rep_table[%d]->c_id: 0x%x.", i, rep_table[i].c_id);
+        PR_DEBUG("rep_table[%d]->a_id: 0x%x.", i, rep_table[i].a_id);
+        PR_DEBUG("rep_table[%d]->min: %u.", i, rep_table[i].min);
+        PR_DEBUG("rep_table[%d]->max: %u.", i, rep_table[i].max);
+        PR_DEBUG("rep_table[%d]->type: %d.", i, rep_table[i].type);
+        PR_DEBUG("rep_table[%d]->val: %d.", i, rep_table[i].val);
     }
     pro_data->rep_table = rep_table;
     pro_data->rep_table_num = rep_table_num;
@@ -278,7 +281,7 @@ STATIC OPERATE_RET _lua_parase_rep_table_data(CHAR_T *pro_data_json_str, TY_LUA_
     return op_ret;
 }
 
-STATIC OPERATE_RET tuya_zigbee_lua_pro_data(CHAR_T *dev_id, TY_LUA_ZE_PRO_DATA *pro_data)
+STATIC OPERATE_RET __attribute__((unused)) tuya_zigbee_lua_pro_data(CHAR_T *dev_id, TY_LUA_ZE_PRO_DATA *pro_data)
 {
     CHAR_T *pro_data_json_str = NULL;
     OPERATE_RET ret = OPRT_OK;
@@ -294,7 +297,7 @@ STATIC OPERATE_RET tuya_zigbee_lua_pro_data(CHAR_T *dev_id, TY_LUA_ZE_PRO_DATA *
     }
     
     if(NULL != pro_data_json_str)
-        Free(pro_data_json_str)
+        Free(pro_data_json_str);
         
 }
 

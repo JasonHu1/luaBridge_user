@@ -53,7 +53,7 @@ STATIC LUA_ADAPTER_LIST_S *_lua_get_adapter_pro(TY_LUA_SUPPORT_PROTOCOL pro)
     return NULL;
 }
 
-STATIC VOID _lua_del_adapter_pro(TY_LUA_SUPPORT_PROTOCOL pro)
+STATIC VOID __attribute__((unused)) _lua_del_adapter_pro(TY_LUA_SUPPORT_PROTOCOL pro)
 {
     LUA_ADAPTER_S *lua_adapter_api_tmp = _get_lua_adapter();
     LUA_ADAPTER_LIST_S *list = lua_adapter_api_tmp->lua_adapter_list;

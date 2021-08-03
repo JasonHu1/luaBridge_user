@@ -1,6 +1,6 @@
 
 #include "lua_com_api.h"
-
+#include "luaconf.h"
 
 STATIC OPERATE_RET lua_get_global_key_str(IN lua_State *L, CHAR_T *key_str, CHAR_T **out_val)
 {
@@ -183,7 +183,7 @@ STATIC OPERATE_RET lua_com_get_pro_data(IN lua_State *L, OUT CHAR_T **pro_data_j
 }
 
 
-STATIC OPERATE_RET lua_com_get_header_data(IN lua_State *L, OUT LUA_HEARD_INFO_S *head_info)
+STATIC OPERATE_RET __attribute__((unused)) lua_com_get_header_data(IN lua_State *L, OUT LUA_HEARD_INFO_S *head_info)
 {
     CHAR_T *str = NULL;
     CHAR_T *out_str = NULL;
