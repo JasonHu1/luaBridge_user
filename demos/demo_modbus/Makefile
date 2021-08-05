@@ -67,7 +67,7 @@ ifeq ($(APP_PACK),$(wildcard $(APP_PACK)))
 endif
 
 build_app: $(USER_OBJS_OUT)
-	$(CC) $(USER_OBJS_OUT) $(CFLAGS) $(LINKFLAGS) -o $(OUTPUT_DIR)/$(APP_BIN_NAME)
+	$(CPP) $(USER_OBJS_OUT) $(CFLAGS) $(LINKFLAGS) -o $(OUTPUT_DIR)/$(APP_BIN_NAME)
 	@echo "Build APP Finish"
 
 $(OUTPUT_DIR_OBJS)/%.c.o: %.c

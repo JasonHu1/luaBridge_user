@@ -17,4 +17,21 @@ typedef struct __protoFormat
     char retVal;
 }protoFormat_t;
 
+class Cdp
+{
+public:
+    char dpid;
+};
+
+class ddd
+{
+};
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int message_encode(void);
+#ifdef __cplusplus
+}
+#endif
 #endif//__LUA_DEMO_H_

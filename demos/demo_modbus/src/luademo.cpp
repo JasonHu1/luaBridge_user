@@ -2,6 +2,10 @@
 #include "LuaScriptEngine.h"
 #include <stdio.h>
 #include "luademo.h"
+#include "Json.h"
+#include "Message.h"
+#include "tuya_proto.h"
+#include "third_format.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,18 +17,30 @@ extern "C" {
 
 using namespace iot::lua;
 
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int message_encode(void){
-    TY_OBJ_DP_S dp_data;
+    TuyaProto dp_data;
     size_t rbytes=0,fsize=0;
     char *pbuf=NULL;
-    dp_data.dpid = 1;
-    dp_data.type = 2;
-    dp_data.value.dp_value = 3;
-    dp_data.time_stamp = 0x55667788;
+    dp_data.set_cmd_tp(0x30);
 
-    protoFormat_t tt;
+
+    Cdp msg1;
+    msg1.dpid =0x30;
+
+    TuyaProto msg2;
+    msg2.set_cmd_tp(0x31);
+    
+    ThirdFormat tt;
     LuaScriptEngine engine;
-    FILE *fp = fopen("test.lua", "r");
+    FILE *fp = fopen("../../test.lua", "r");
+    std::cout<<"fp:"<<fp<<std::endl;
+    printf("fp:%d\r\n",fp);
     if(fp){
         fseek(fp, 0, SEEK_END);
         fsize = ftell(fp);
@@ -32,8 +48,8 @@ int message_encode(void){
         pbuf = (char *)malloc(fsize);
         rbytes = fread (pbuf,1,fsize,fp);
         if(rbytes){
-            printf("%s/r/n",pbuf);
-            engine.execute(pbuf, "encode", &dp_data, &tt);
+            printf("%s",pbuf);
+            engine.execute(pbuf, "encode", &dp_data,&tt);
         }
     }else{
         return -1;
@@ -41,11 +57,6 @@ int message_encode(void){
     
     return 0;
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifdef __cplusplus
 }
 #endif

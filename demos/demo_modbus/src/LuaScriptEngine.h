@@ -13,7 +13,8 @@
 
 #include "LuaBridge.h"
 #include "luademo.h"
-//#include "ScriptBuffer.h"
+#include "tuya_proto.h"
+#include "third_format.h"
 #include "Message.h"
 #include "Json.h"
 #ifdef __cplusplus
@@ -54,7 +55,7 @@ namespace iot {
                 using namespace luabridge;
 
                 getGlobalNamespace(L)
-                        .beginNamespace("tuya")
+                        .beginNamespace("namespace")
                         .beginClass<Message>("Message")
                         .addProperty<string>("type", &Message::getType, &Message::setType)
                         .addProperty<string>("sno", &Message::getSno, &Message::setSno)
@@ -64,53 +65,40 @@ namespace iot {
                         .addData("data", &Message::data)
                         .addFunction("toJSON", &Message::toJSON)
                         .endClass()
-                        .beginClass<Json>("Json")
-                        .addFunction("toJSON", &Json::toJSON)
-                        .addFunction("fstr", &Json::str)
-                        .addFunction("fint", &Json::integer)
-                        .addFunction("fbool", &Json::boolean)
-                        .addFunction("fnumber", &Json::number)
-                        .addFunction("fobj", &Json::fo)
-                        .addFunction("flist", &Json::array)
 
-                        .addFunction("fpstr", &Json::strp)
-                        .addFunction("fpint", &Json::integerp)
-                        .addFunction("fpbool", &Json::booleanp)
-                        .addFunction("fpnumber", &Json::numberp)
-                        .addFunction("fpobj", &Json::objp)
-                        .addFunction("fplist", &Json::arrayp)
+                        .beginClass<TY_OBJ_DP_S>("objdp")
+                        .addData("dpid", &TY_OBJ_DP_S::dpid)
+                        .endClass()
 
-                        .addFunction("lstr", &Json::lstr)
-                        .addFunction("lint", &Json::lint)
-                        .addFunction("lbool", &Json::lbool)
-                        .addFunction("lnumber", &Json::lnumber)
-                        .addFunction("lobj", &Json::lobj)
-                        .addFunction("llist", &Json::ll)
+                        .beginClass<TuyaProtoElement>("TuyaProtoElement")
+                        .addProperty<unsigned int>("dpid", &TuyaProtoElement::get_dpid, &TuyaProtoElement::set_dpid)
+                        .addProperty<unsigned char>("type", &TuyaProtoElement::get_type, &TuyaProtoElement::set_type)
+                        .addProperty<int>("vint", &TuyaProtoElement::get_valueint, &TuyaProtoElement::set_valueint)
+                        .addProperty<unsigned int>("venum", &TuyaProtoElement::get_valueenum, &TuyaProtoElement::set_valueenum)
+                        .addProperty<string>("vstr", &TuyaProtoElement::get_valuestr, &TuyaProtoElement::set_valuestr)
+                        .addProperty<int>("vbool", &TuyaProtoElement::get_valuebool, &TuyaProtoElement::set_valuebool)
+                        .addProperty<unsigned int>("vbitmap", &TuyaProtoElement::get_valuebitmap, &TuyaProtoElement::set_valuebitmap)
+                        .addProperty<unsigned int>("timestamp", &TuyaProtoElement::get_timeStamp, &TuyaProtoElement::set_timeStamp)
+                        .endClass()
 
-                        .addFunction("lpstr", &Json::lstrp)
-                        .addFunction("lpint", &Json::lintp)
-                        .addFunction("lpbool", &Json::lboolp)
-                        .addFunction("lpnumber", &Json::lnumberp)
-                        .addFunction("lpobj", &Json::lobjp)
-                        .addFunction("lplist", &Json::llp)
+                        .beginClass<TuyaProto>("TuyaProto")
+//                        .addProperty<unsigned char>("cmd_tp", &TuyaProto::get_cmd_tp, &TuyaProto::set_cmd_tp)
+                        .addProperty<unsigned char>("dtt_tp", &TuyaProto::get_dtt_tp, &TuyaProto::set_dtt_tp)
+                        .addProperty<unsigned int>("cid", &TuyaProto::get_cid, &TuyaProto::set_cid)
+                        .addProperty<unsigned int>("mb_id", &TuyaProto::get_mb_id, &TuyaProto::set_mb_id)
+                        .addProperty<unsigned int>("dps_cnt", &TuyaProto::get_dps_cnt, &TuyaProto::set_dps_cnt)
+                        .addProperty<unsigned char>("cmd_tp", &TuyaProto::get_cmd_tp, &TuyaProto::set_cmd_tp)
+//                        .addFunction("find", &TuyaProto::find)
+                        .addFunction("setData", &TuyaProto::setData)
+                        .addFunction("getData", &TuyaProto::getData)
+                        .endClass()                        
+                        .beginClass<ThirdFormat>("3rdFormat")
+                        .addData("payload",&ThirdFormat::py)
+                        .addData("retVal",&ThirdFormat::retVal)
+                        .endClass()
 
-                        .addFunction("setStr", &Json::setStr)
-                        .addFunction("setInt", &Json::setInt)
-                        .addFunction("setBool", &Json::setBool)
-                        .addFunction("setNumber", &Json::setNumber)
-                        .addFunction("vstr", &Json::vstr)
-                        .addFunction("vint", &Json::vint)
-                        .addFunction("vbool", &Json::vbool)
-                        .addFunction("vnumber", &Json::vnumber)
-                        .addFunction("lcount", &Json::lcount)
-                        .addFunction("fcount", &Json::fcount)
-
-
-                        .addFunction("find", &Json::find)
-                        .addFunction("index", &Json::index)
-                        .addFunction("moveToRoot", &Json::moveToRoot)
-                        .addFunction("parent", &Json::parent)
-                        .addFunction("clear", &Json::clear)
+                        .beginClass<Cdp>("Cdp")
+                        .addData("dpid", &Cdp::dpid)
                         .endClass()
 
                 .endNamespace();//.beginNamespace("tuya")
@@ -140,14 +128,14 @@ namespace iot {
                 }
                 return true;
             }
-
-            int execute(std::string script, std::string method, TY_OBJ_DP_S *pSource, protoFormat_t *pTarget) {
+            template<typename s,typename t>
+            int execute(std::string script, std::string method, s *pSource,t *pTarget) {
 
                 if (method.length() == 0) {
                     _log(INFO) << "* execute lua script  with empty method" << std::endl;
                     return -1;
                 }
-
+                
                 int error = luaL_loadbuffer(L, script.c_str(), script.length(), "tuya") || lua_pcall(L, 0, 0, 0);
                 if (error) {
                     std::cout<<lua_tostring(L, -1);
@@ -155,7 +143,7 @@ namespace iot {
                 }
                 try {
                     luabridge::LuaRef encoder = luabridge::getGlobal(L, method.c_str());
-                    encoder(pSource, pTarget);
+                    encoder(pSource,pTarget);
                 }
                 catch (luabridge::LuaException const &e) {
                     std::cout<<e.what();

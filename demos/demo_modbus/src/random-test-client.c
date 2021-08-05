@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-
+#include "main.h"
 #include <modbus.h>
 
 /* The goal of this program is to check all major functions of
@@ -54,7 +54,8 @@ int main(void)
     ctx = modbus_new_rtu("/dev/ttyUSB0", 19200, 'N', 8, 1);
     modbus_set_slave(ctx, SERVER_ID);
 */
-
+    message_encode();
+    return 0;
     /* TCP */
     ctx = modbus_new_tcp("127.0.0.1", 1503);
     modbus_set_debug(ctx, TRUE);

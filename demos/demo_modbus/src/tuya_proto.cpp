@@ -1,0 +1,1 @@
+#include "tuya_proto.h"
