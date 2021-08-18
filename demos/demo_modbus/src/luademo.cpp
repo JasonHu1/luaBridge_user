@@ -2,15 +2,13 @@
 #include "LuaScriptEngine.h"
 #include <stdio.h>
 #include "luademo.h"
-#include "Json.h"
-#include "Message.h"
 #include "tuya_proto.h"
 #include "third_format.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "tuya_cloud_com_defs.h"
+
 #ifdef __cplusplus
 }
 #endif
@@ -32,13 +30,10 @@ int message_encode(void){
 
     Cdp msg1;
     msg1.dpid =0x30;
-
-    TuyaProto msg2;
-    msg2.set_cmd_tp(0x31);
     
     ThirdFormat tt;
     LuaScriptEngine engine;
-    FILE *fp = fopen("../../test.lua", "r");
+    FILE *fp = fopen("../../test.lua", "rw");
     std::cout<<"fp:"<<fp<<std::endl;
     printf("fp:%d\r\n",fp);
     if(fp){
@@ -50,6 +45,10 @@ int message_encode(void){
         if(rbytes){
             printf("%s",pbuf);
             engine.execute(pbuf, "encode", &dp_data,&tt);
+            printf("printf in c++:\r\n");
+            printf("tt.retVal=%d",tt.retVal);
+            tt.printpayload();\
+            printf("tt.name=%s\r\n",tt.name.c_str());
         }
     }else{
         return -1;

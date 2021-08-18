@@ -7,7 +7,9 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <lua.hpp>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 #include <mutex>
 
 
@@ -15,12 +17,9 @@
 #include "luademo.h"
 #include "tuya_proto.h"
 #include "third_format.h"
-#include "Message.h"
-#include "Json.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "tuya_cloud_com_defs.h"
 #ifdef __cplusplus
 }
 #endif
@@ -55,53 +54,43 @@ namespace iot {
                 using namespace luabridge;
 
                 getGlobalNamespace(L)
-                        .beginNamespace("namespace")
-                        .beginClass<Message>("Message")
-                        .addProperty<string>("type", &Message::getType, &Message::setType)
-                        .addProperty<string>("sno", &Message::getSno, &Message::setSno)
-                        .addProperty<string>("command", &Message::getCommand, &Message::setCommand)
-                        .addProperty<string>("attribute", &Message::getAttribute, &Message::setAttribute)
-                        .addProperty<string>("mac", &Message::getMac, &Message::setMac)
-                        .addData("data", &Message::data)
-                        .addFunction("toJSON", &Message::toJSON)
-                        .endClass()
-
-                        .beginClass<TY_OBJ_DP_S>("objdp")
-                        .addData("dpid", &TY_OBJ_DP_S::dpid)
-                        .endClass()
-
-                        .beginClass<TuyaProtoElement>("TuyaProtoElement")
-                        .addProperty<unsigned int>("dpid", &TuyaProtoElement::get_dpid, &TuyaProtoElement::set_dpid)
-                        .addProperty<unsigned char>("type", &TuyaProtoElement::get_type, &TuyaProtoElement::set_type)
-                        .addProperty<int>("vint", &TuyaProtoElement::get_valueint, &TuyaProtoElement::set_valueint)
-                        .addProperty<unsigned int>("venum", &TuyaProtoElement::get_valueenum, &TuyaProtoElement::set_valueenum)
-                        .addProperty<string>("vstr", &TuyaProtoElement::get_valuestr, &TuyaProtoElement::set_valuestr)
-                        .addProperty<int>("vbool", &TuyaProtoElement::get_valuebool, &TuyaProtoElement::set_valuebool)
-                        .addProperty<unsigned int>("vbitmap", &TuyaProtoElement::get_valuebitmap, &TuyaProtoElement::set_valuebitmap)
-                        .addProperty<unsigned int>("timestamp", &TuyaProtoElement::get_timeStamp, &TuyaProtoElement::set_timeStamp)
-                        .endClass()
-
-                        .beginClass<TuyaProto>("TuyaProto")
-//                        .addProperty<unsigned char>("cmd_tp", &TuyaProto::get_cmd_tp, &TuyaProto::set_cmd_tp)
-                        .addProperty<unsigned char>("dtt_tp", &TuyaProto::get_dtt_tp, &TuyaProto::set_dtt_tp)
-                        .addProperty<unsigned int>("cid", &TuyaProto::get_cid, &TuyaProto::set_cid)
-                        .addProperty<unsigned int>("mb_id", &TuyaProto::get_mb_id, &TuyaProto::set_mb_id)
-                        .addProperty<unsigned int>("dps_cnt", &TuyaProto::get_dps_cnt, &TuyaProto::set_dps_cnt)
-                        .addProperty<unsigned char>("cmd_tp", &TuyaProto::get_cmd_tp, &TuyaProto::set_cmd_tp)
-//                        .addFunction("find", &TuyaProto::find)
+                .beginNamespace("test")
+                    .beginClass<A>("A")
+                        .addConstructor<void(*)(std::string)>()
+                        .addFunction("getName", &A::getName)
+                        .addFunction("printName", &A::printName)
+                    .endClass()
+                    .beginClass<TuyaProtoElement>("TuyaProtoElement")
+                        .addConstructor<void(*)()>()
+                        .addProperty ("dpid", &TuyaProtoElement::get_dpid, &TuyaProtoElement::set_dpid)
+                        .addProperty ("type", &TuyaProtoElement::get_type, &TuyaProtoElement::set_type)
+                        .addProperty ("valueint", &TuyaProtoElement::get_valueint, &TuyaProtoElement::set_valueint)
+                        .addProperty ("valueenum", &TuyaProtoElement::get_valueenum, &TuyaProtoElement::set_valueenum)
+                        .addProperty ("valuestr", &TuyaProtoElement::get_valuestr, &TuyaProtoElement::set_valuestr)
+                        .addProperty ("valuebool", &TuyaProtoElement::get_valuebool, &TuyaProtoElement::set_valuebool)
+                        .addProperty ("valuebitmap", &TuyaProtoElement::get_valuebitmap, &TuyaProtoElement::set_valuebitmap)
+                        .addProperty ("timeStamp", &TuyaProtoElement::get_timeStamp, &TuyaProtoElement::set_timeStamp)
+                    .endClass()
+                    .beginClass<TuyaProto>("TuyaProto")
+                        .addConstructor<void(*)()>()
+                        .addProperty ("cmd_tp", &TuyaProto::get_cmd_tp, &TuyaProto::set_cmd_tp)
+                        .addProperty ("dtt_tp", &TuyaProto::get_dtt_tp, &TuyaProto::set_dtt_tp)
+                        .addProperty ("cid", &TuyaProto::get_cid, &TuyaProto::set_cid)
+                        .addProperty ("mb_id", &TuyaProto::get_mb_id, &TuyaProto::set_mb_id)
+                        .addProperty ("dps_cnt", &TuyaProto::get_dps_cnt, &TuyaProto::set_dps_cnt)
                         .addFunction("setData", &TuyaProto::setData)
                         .addFunction("getData", &TuyaProto::getData)
-                        .endClass()                        
-                        .beginClass<ThirdFormat>("3rdFormat")
-                        .addData("payload",&ThirdFormat::py)
-                        .addData("retVal",&ThirdFormat::retVal)
-                        .endClass()
-
-                        .beginClass<Cdp>("Cdp")
-                        .addData("dpid", &Cdp::dpid)
-                        .endClass()
-
-                .endNamespace();//.beginNamespace("tuya")
+                    .endClass()
+                    .beginClass<ThirdFormat>("ThirdFormat")
+                        .addConstructor<void(*)()>()
+                        .addData<int>("retVal", &ThirdFormat::retVal)
+                        .addData<std::string>("payload", &ThirdFormat::payload)
+                        .addFunction("printpayload", &ThirdFormat::printpayload)
+                        .addFunction("getpayload", &ThirdFormat::getpayload)
+                        .addFunction("setpayload", &ThirdFormat::setpayload)
+                        .addFunction("setname", &ThirdFormat::setname)
+                    .endClass()
+                .endNamespace();//.beginNamespace("test")
             }
 
             LuaScriptEngine() {

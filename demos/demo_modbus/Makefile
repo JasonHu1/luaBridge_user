@@ -13,22 +13,17 @@ OBJDUMP = $(COMPILE_PREX)objdump
 APP_PACK = ./build/pack.sh
 
 LINKFLAGS = \
-        -L$(ROOT_DIR)/sdk/lib -ltuya_gw_ext_sdk -pthread -lm
+        -L$(ROOT_DIR)/sdk/lib -pthread -lm
 
 LINKFLAGS += $(USER_LINK_FLAGS)
-LINKFLAGS += `pkg-config --libs libmodbus`
-LINKFLAGS += `pkg-config --libs liblua`
 
 CCFLAGS = \
-	-g -fPIC -Werror=unused-function
-CCFLAGS += `pkg-config --cflags libmodbus`
-CCFLAGS += `pkg-config --cflags liblua`
+	-g -fPIC
 
 CPPFLAGS += -std=c++11
 
 DEFINES = -DAPP_BIN_NAME=\"$(APP_BIN_NAME)\" \
 		  -DUSER_SW_VER=\"$(USER_SW_VER)\" \
-		  -DLUA_COMPAT_5_3
 
 CFLAGS = $(CCFLAGS) $(DEFINES) $(USER_INCS) $(USER_CFLAGS)
 
@@ -39,11 +34,15 @@ OUTPUT_DIR_OBJS = $(OUTPUT_DIR)/.objs
 #user app基准路径
 USER_SRC_BASE_DIR = ./src
 USER_SRC_BASE_DIR += ./3rd-party
+#USER_SRC_BASE_DIR += ./3rd-party/lua-5.3.6
+
 
 USER_INC_BASE_DIR = ./include
 USER_INC_BASE_DIR += ./3rd-party
+#USER_INC_BASE_DIR += ./3rd-party/lua-5.3.6
+#USER_INC_BASE_DIR += ./3rd-party/LuaBridge
+#USER_INC_BASE_DIR += ./3rd-party/LuaBridge/detail
 
-USER_INC_BASE_DIR += $(shell find $(ROOT_DIR)/sdk -name include -type d)
 
 #user app 编译文件
 USER_SRC_DIRS = $(shell find $(USER_SRC_BASE_DIR) -type d)
@@ -72,7 +71,7 @@ build_app: $(USER_OBJS_OUT)
 
 $(OUTPUT_DIR_OBJS)/%.c.o: %.c
 	@mkdir -p $(dir $@);
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CPP) $(CFLAGS) -o $@ -c $<
 
 $(OUTPUT_DIR_OBJS)/%.cpp.o: %.cpp
 	@mkdir -p $(dir $@);
